@@ -4,8 +4,12 @@
  * @Author       : CMH,ZF,ZY,SSS
  * @Version      : 0.0.1
  * @LastEditors  : zongfei
- * @LastEditTime : 2024-08-22 16:31:27
+ * @LastEditTime : 2024-08-22 20:30:43
 **/
+#ifndef _TRANSDUCER_STRUCT_H_
+#define _TRANSDUCER_STRUCT_H_
+
+
 #include <time.h>
 
 typedef struct environment
@@ -29,3 +33,6 @@ typedef struct total
     time_t      time;
     int         fans;      //风扇  0：关  1：慢  2：快                      
 }total_t;
+
+
+#endif // !_TRANSDUCER_STRUCT_H_

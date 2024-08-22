@@ -1,6 +1,6 @@
 #指定编译器为gcc
 CC=gcc
-EXE=cccc
+EXE=program
 #CC=arm-none-linux-gnueabi-gcc
 #指定编译时的参数
 AFLAGS= -c -g -m32

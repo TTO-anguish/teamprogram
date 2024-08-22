@@ -4,7 +4,7 @@
  * @Author       : zongfei
  * @Version      : 0.0.1
  * @LastEditors  : zongfei
- * @LastEditTime : 2024-08-22 19:23:34
+ * @LastEditTime : 2024-08-22 20:29:01
  * @Copyright    : ZFCompany AUTOMOBILE RESEARCH INSTITUTE CO.,LTD Copyright (c) 2024.
  * @Email: 15056030055@163.com
 **/
@@ -12,6 +12,7 @@
 #include <cjson/cJSON.h>
 #include <MQTTClient.h>
 #include <sqlite3.h>
+#include "mqtt.h"
 #include "transducer_struct.h"
 #define ServerIp "172.19.113.181"
 #define Port 8888
@@ -49,6 +50,8 @@ int main(int argc,const char * argv[])
 
     struct sockaddr_in clientIn;
     socklen_t addrlen = sizeof(clientIn);
+
+    printf("%d\n", sizeof(total_t));
 
     int newfd = accept(sockfd, (struct sockaddr*)&clientIn, &addrlen);
     if (newfd == -1){
