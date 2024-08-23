@@ -4,14 +4,16 @@
  * @Author       : CMH,ZF,ZY,SSS
  * @Version      : 0.0.1
  * @LastEditors  : zongfei
- * @LastEditTime : 2024-08-22 22:06:37
+ * @LastEditTime : 2024-08-23 11:49:14
 **/
 #include "mqtt.h"
+#define QOS 1
 
 /*MQTTClient_deliveryToken结构体用于表示消息的发送状态。它通常用于在 QoS 1 
 或 QoS 2 的消息传递中确认消息是否已经成功发送到 MQTT 服务器*/
 volatile MQTTClient_deliveryToken deliveredtoken;   //SB,就他妈是个int类型
-char data[100];
+char data[150];
+corrToQt_t corrToQt;
 
 char *l_trim(char *szOutput, const char *szInput)
 {
@@ -131,6 +133,8 @@ int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *m
 	// 打印出订阅到的数据
 	// printf("data_sub:%s\n",data);
 	//transfor_virtual_data(); //要改成自己的
+    json_to_corrToQt(data, &corrToQt);
+
 	MQTTClient_freeMessage(&message);
 	MQTTClient_free(topicName);
 	return 1;
@@ -156,11 +160,39 @@ void MQTTconnect(MQTTClient* client, char* client_id)
     conn_opts.keepAliveInterval = 20;  // 设置保持连接的时间间隔
     conn_opts.cleansession = 1;  // 设置是否清除会话（0 为不清除，1 为清除）
 
-    MQTTClient_setCallbacks(client, NULL, connlost, msgarrvd, delivered);
+    MQTTClient_setCallbacks(*client, NULL, connlost, msgarrvd, delivered);
 
-    if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS) {
+    if ((rc = MQTTClient_connect(*client, &conn_opts)) != MQTTCLIENT_SUCCESS) {
         fprintf(stderr, "Failed to connect, return code %d\n", rc);
         exit(EXIT_FAILURE);
     }
     printf("mqtt connect success\n");
+}
+
+
+void exit_mqtt(MQTTClient* client)
+{
+	int rc;
+	if ((rc = MQTTClient_disconnect(*client, 10000)) != MQTTCLIENT_SUCCESS)
+		printf("Failed to disconnect, return code %d\n", rc);
+
+	MQTTClient_destroy(client); //释放
+}
+
+int mqtt_subscribe(MQTTClient* client, const char *topic)
+{
+	return MQTTClient_subscribe(*client, topic, QOS);
+}
+
+
+// 自定义发布信息的函数
+int mqtt_publish(const char *topic, char *msg, MQTTClient* client)
+{
+	MQTTClient_message pubmsg = MQTTClient_message_initializer;
+	MQTTClient_deliveryToken token;
+	pubmsg.payload = msg;
+	pubmsg.payloadlen = (int)strlen(msg);
+	pubmsg.qos = QOS;
+	pubmsg.retained = 0;
+	return MQTTClient_publishMessage(*client, topic, &pubmsg, &token);
 }

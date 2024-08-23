@@ -4,7 +4,7 @@
  * @Author       : CMH,ZF,ZY,SSS
  * @Version      : 0.0.1
  * @LastEditors  : zongfei
- * @LastEditTime : 2024-08-22 22:02:31
+ * @LastEditTime : 2024-08-23 11:44:14
 **/
 #ifndef __MQTT_H_
 #define __MQTT_H_
@@ -19,10 +19,12 @@
 #include <string.h>
 #include <errno.h>
 #include "json.h"
+#include "cJSON.h"
+#include "sqlite.h"
 #include "transducer_struct.h"
 
-void delivered(void *context, MQTTClient_deliveryToken dt);
 
+void delivered(void *context, MQTTClient_deliveryToken dt);
 
 //消息到达后
 int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message);
@@ -57,5 +59,17 @@ int GetProfileString(char *profile, char *AppName, char *KeyName, char *KeyVal);
 **/
 void MQTTconnect(MQTTClient* client, char* client_id);
 
+//客户端退出函数
+void exit_mqtt(MQTTClient* client);
+
+// 自定义订阅函数
+/*handle：这是一个 MQTTClient 类型的句柄，代表客户端的连接实例。
+    你在调用 MQTTClient_create 或 MQTTClient_createWithOptions 时获得这个句柄。
+    topic：一个 C 字符串，表示你要订阅的 MQTT 主题。主题必须遵循 MQTT 主题命名规则。
+    qos：指定订阅的服务质量（QoS）。有效的 QoS 值为 0、1 或 2：
+    QoS 0: 至多一次传输。消息可能会丢失或重复。
+    QoS 1: 至少一次传输。消息不会丢失，但可能会重复。
+    QoS 2: 只有一次传输。消息不会丢失或重复。*/
+int mqtt_subscribe(MQTTClient* client, const char *topic);
 
 #endif // !__MQTT_H_

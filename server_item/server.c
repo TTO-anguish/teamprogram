@@ -4,12 +4,12 @@
  * @Author       : zongfei
  * @Version      : 0.0.1
  * @LastEditors  : zongfei
- * @LastEditTime : 2024-08-22 20:29:01
+ * @LastEditTime : 2024-08-23 11:50:47
  * @Copyright    : ZFCompany AUTOMOBILE RESEARCH INSTITUTE CO.,LTD Copyright (c) 2024.
  * @Email: 15056030055@163.com
 **/
 #include <myhead.h>
-#include <cjson/cJSON.h>
+#include "cJSON.h"
 #include <MQTTClient.h>
 #include <sqlite3.h>
 #include "mqtt.h"
@@ -17,6 +17,8 @@
 #define ServerIp "172.19.113.181"
 #define Port 8888
 #define sqlname "Client.db"
+#define SUB "QtToUbuntu"
+#define PUB "UbuntuToQt"
 
 int main(int argc,const char * argv[])
 {
@@ -59,6 +61,7 @@ int main(int argc,const char * argv[])
         exit(EXIT_FAILURE);
     }
     printf("[%s:%d]已连接\n", inet_ntoa(clientIn.sin_addr), ntohs(clientIn.sin_port));
+    
     total_t total;
     while (1)
     {   
