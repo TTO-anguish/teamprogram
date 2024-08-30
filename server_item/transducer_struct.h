@@ -4,7 +4,7 @@
  * @Author       : CMH,ZF,ZY,SSS
  * @Version      : 0.0.1
  * @LastEditors  : zongfei
- * @LastEditTime : 2024-08-23 10:18:03
+ * @LastEditTime : 2024-08-30 13:44:12
 **/
 #ifndef _TRANSDUCER_STRUCT_H_
 #define _TRANSDUCER_STRUCT_H_
@@ -42,6 +42,14 @@ typedef struct corrToQt
     int         fans;
     int    sqlsearch;
 }corrToQt_t;
+
+
+/// @brief 消息队列结构体
+struct Mesgget
+{
+    long type;
+    total_t SendToBOtt;
+}Mesgget_t;
 
 
 #endif // !_TRANSDUCER_STRUCT_H_

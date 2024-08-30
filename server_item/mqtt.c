@@ -4,7 +4,7 @@
  * @Author       : CMH,ZF,ZY,SSS
  * @Version      : 0.0.1
  * @LastEditors  : zongfei
- * @LastEditTime : 2024-08-23 11:49:14
+ * @LastEditTime : 2024-08-30 17:34:55
 **/
 #include "mqtt.h"
 #define QOS 1
@@ -14,6 +14,7 @@
 volatile MQTTClient_deliveryToken deliveredtoken;   //SB,就他妈是个int类型
 char data[150];
 corrToQt_t corrToQt;
+int recvMQTTFlag = 0;
 
 char *l_trim(char *szOutput, const char *szInput)
 {
@@ -125,6 +126,7 @@ void delivered(void *context, MQTTClient_deliveryToken dt)
 	deliveredtoken = dt;
 }
 
+//接受到数据，在message->payload中，然后将message->payload的内容memcpy到data
 int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message)
 {
 	// 数据到达后执行这个函数并且把数据存放到数组里
@@ -132,8 +134,8 @@ int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *m
 	memcpy(data, message->payload, message->payloadlen);
 	// 打印出订阅到的数据
 	// printf("data_sub:%s\n",data);
-	//transfor_virtual_data(); //要改成自己的
-    json_to_corrToQt(data, &corrToQt);
+    //json_to_corrToQt(data, &corrToQt);
+    recvMQTTFlag = 1;
 
 	MQTTClient_freeMessage(&message);
 	MQTTClient_free(topicName);
@@ -143,7 +145,7 @@ int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *m
 // 连接丢失时执行
 void connlost(void *context, char *cause)
 {
-	printf("\nConnection lost\n");
+	printf("\nConnection lost:");
 	printf(" cause: %s\n", cause);
 }
 
@@ -155,8 +157,10 @@ void MQTTconnect(MQTTClient* client, char* client_id)
     MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
 
     GetProfileString(DEF_CONF_FILE, "mqtt", "uri", uri);//得到mqtt的ip地址和端口号
+    //printf("111111uri = %s\n", uri);
     // 创建 MQTT 客户端实例
     MQTTClient_create(client, uri, client_id, MQTTCLIENT_PERSISTENCE_NONE, NULL);
+
     conn_opts.keepAliveInterval = 20;  // 设置保持连接的时间间隔
     conn_opts.cleansession = 1;  // 设置是否清除会话（0 为不清除，1 为清除）
 

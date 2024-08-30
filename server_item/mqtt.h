@@ -72,4 +72,7 @@ void exit_mqtt(MQTTClient* client);
     QoS 2: 只有一次传输。消息不会丢失或重复。*/
 int mqtt_subscribe(MQTTClient* client, const char *topic);
 
+//自定义发布函数
+int mqtt_publish(const char *topic, char *msg, MQTTClient* client);
+
 #endif // !__MQTT_H_
