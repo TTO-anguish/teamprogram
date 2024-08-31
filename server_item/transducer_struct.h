@@ -4,7 +4,7 @@
  * @Author       : CMH,ZF,ZY,SSS
  * @Version      : 0.0.1
  * @LastEditors  : zongfei
- * @LastEditTime : 2024-08-30 13:44:12
+ * @LastEditTime : 2024-08-30 21:04:39
 **/
 #ifndef _TRANSDUCER_STRUCT_H_
 #define _TRANSDUCER_STRUCT_H_
@@ -45,10 +45,10 @@ typedef struct corrToQt
 
 
 /// @brief 消息队列结构体
-struct Mesgget
+typedef struct Mesgget
 {
     long type;
-    total_t SendToBOtt;
+    total_t SendToBott;
 }Mesgget_t;
 
 
